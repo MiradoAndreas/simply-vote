@@ -4,6 +4,8 @@ import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@cl
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/them-provider";
+import { ModeToggle } from "@/components/ui/toogle-mode";
+import { TRPCReactProvider } from "@/trpc/client";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -34,29 +36,33 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ClerkProvider>
-            <header className="flex justify-end items-center p-4 gap-4 h-16">
-              <Show when="signed-out">
-                <SignInButton mode="modal" />
-                <SignUpButton mode="modal">
+        <ClerkProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
 
-                  Sign Up
+            <TRPCReactProvider>
+              <header className="flex justify-end items-center p-4 gap-4 h-16">
+                <Show when="signed-out">
+                  <SignInButton mode="modal" />
+                  <SignUpButton mode="modal">
 
-                </SignUpButton>
-              </Show>
-              <Show when="signed-in">
-                <UserButton />
-              </Show>
-            </header>
-            {children}
-          </ClerkProvider>
-        </ThemeProvider>
+                    Sign Up
+
+                  </SignUpButton>
+                </Show>
+                <Show when="signed-in">
+                  <UserButton />
+                </Show>
+              </header>
+              {children}
+              <ModeToggle />
+            </TRPCReactProvider>
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

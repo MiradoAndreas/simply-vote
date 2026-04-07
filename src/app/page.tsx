@@ -1,13 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/ui/toogle-mode"
-
+import React from 'react'
 
 const Page = () => {
   return (
-    <div>
-      <Button>Hello SimplyVote</Button>
-      <ModeToggle />
-    </div>
+    <div>Page</div>
   )
 }
 
