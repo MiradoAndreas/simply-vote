@@ -1,9 +1,12 @@
+import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/ui/toogle-mode"
 
 
 const Page = () => {
   return (
-    <div className="text-green-500">
-      Hello SimplyVote
+    <div>
+      <Button>Hello SimplyVote</Button>
+      <ModeToggle />
     </div>
   )
 }
