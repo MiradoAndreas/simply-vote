@@ -5,7 +5,10 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/them-provider";
 import { ModeToggle } from "@/components/ui/toogle-mode";
+
+import { Toaster } from "sonner";
 import { TRPCReactProvider } from "@/trpc/client";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -36,33 +39,21 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClerkProvider>
             <TRPCReactProvider>
-              <header className="flex justify-end items-center p-4 gap-4 h-16">
-                <Show when="signed-out">
-                  <SignInButton mode="modal" />
-                  <SignUpButton mode="modal">
-
-                    Sign Up
-
-                  </SignUpButton>
-                </Show>
-                <Show when="signed-in">
-                  <UserButton />
-                </Show>
-              </header>
-              {children}
-              <ModeToggle />
+              <TooltipProvider>
+                <Toaster />
+                {children}
+              </TooltipProvider>
             </TRPCReactProvider>
-          </ThemeProvider>
-        </ClerkProvider>
+          </ClerkProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
