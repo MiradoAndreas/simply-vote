@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth, useClerk } from "@clerk/nextjs";
-import { BookCopyIcon, FlameIcon, GroupIcon, HomeIcon } from "lucide-react";
+import { BookCopyIcon, FlameIcon, GalleryVerticalEnd, GroupIcon, HomeIcon, School2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -18,6 +18,11 @@ const items = [
     title: "Presentation",
     url: "/",
     icon: HomeIcon,
+  },
+  {
+    title: "All Elections",
+    url: "/all-election",
+    icon: GalleryVerticalEnd,
   },
   {
     title: "AEPC",
