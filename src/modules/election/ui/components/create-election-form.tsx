@@ -1,13 +1,12 @@
 "use client"
 
-import { Suspense } from "react"
-import { ErrorBoundary } from "react-error-boundary"
+
 import { useForm, Controller } from "react-hook-form";
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { format } from "date-fns";
 import { z } from "zod"
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,6 +51,8 @@ export const CreateElectionForm = () => {
   const trpc = useTRPC()
   const router = useRouter()
 
+  const queryClient = useQueryClient()
+
 
 
   const form = useForm<FormValues>({
@@ -69,6 +70,9 @@ export const CreateElectionForm = () => {
   const createElection = useMutation(
     trpc.election.create.mutationOptions({
       onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: trpc.election.getAllElection.queryKey()
+        })
         toast.success("Élection créée avec succès")
       },
       onError: (error) => {
