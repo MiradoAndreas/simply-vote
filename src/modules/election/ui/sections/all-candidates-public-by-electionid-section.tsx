@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { useTRPC } from "@/trpc/client"
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
-import { CheckCircle, Star, Users, VoteIcon } from "lucide-react"
+import { ArrowLeft, ArrowRight, CheckCircle, Star, Users, VoteIcon } from "lucide-react"
 import Image from "next/image"
 import { Suspense, useState } from "react"
 import { ErrorBoundary } from "react-error-boundary"
@@ -11,6 +11,7 @@ import { VoteStatus } from "../components/vote-status"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { VoteModal } from "../components/vote-modal"
+import { useRouter } from "next/navigation"
 
 interface Props {
   electionId: string
@@ -28,6 +29,7 @@ export const AllCandidatesPublicByElectionIdSection = ({ electionId }: Props) =>
 
 
 const AllCandidatesPublicByElectionIdSectionSuspense = ({ electionId }: Props) => {
+  const router = useRouter()
   const trpc = useTRPC()
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
@@ -68,6 +70,14 @@ const AllCandidatesPublicByElectionIdSectionSuspense = ({ electionId }: Props) =
 
   return (
     <>
+      <div className='flex items-center gap-x-2 py-7'>
+        <Button onClick={() => router.back()}>
+          <ArrowLeft /> Retour
+        </Button>
+        <Button onClick={() => router.forward()}>
+          Suvant <ArrowRight />
+        </Button>
+      </div>
       <div className="space-y-8">
         {/* Header avec compteur et statut */}
         <div className="text-center space-y-4">

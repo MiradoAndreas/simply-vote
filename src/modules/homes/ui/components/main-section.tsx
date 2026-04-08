@@ -23,6 +23,7 @@ const items = [
     title: "All Elections",
     url: "/all-election",
     icon: GalleryVerticalEnd,
+    auth: true
   },
   {
     title: "AEPC",

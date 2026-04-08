@@ -22,10 +22,11 @@ interface ElectionCardProps {
     maxChoices: number
     createdAt: Date
   }
+  isResult: boolean
 }
 
-export const ElectionCardPublic = ({ election }: ElectionCardProps) => {
-  const router = useRouter()
+export const ElectionCardPublic = ({ election, isResult }: ElectionCardProps) => {
+
 
   const startDate = new Date(election.startDate)
   const endDate = new Date(election.endDate)
@@ -107,9 +108,18 @@ export const ElectionCardPublic = ({ election }: ElectionCardProps) => {
           className="w-full group"
           asChild
         >
-          <Link href={`/go-vote/${election.id}`} className="flex items-center gap-2">
-            Voir les candidats et voter
-            <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" /></Link>
+          {isResult ? (
+
+            <Link href={`/results/${election.id}`} className="flex items-center gap-2">
+              Voir le résultats
+              <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" /></Link>
+
+          ) : (
+
+            <Link href={`/go-vote/${election.id}`} className="flex items-center gap-2">
+              Voir les candidats et voter
+              <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" /></Link>
+          )}
         </Button>
       </CardFooter>
     </Card>

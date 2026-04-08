@@ -1,10 +1,14 @@
 import React from 'react'
 import { AllElectionPublicSection } from '../sections/all-election-public-section'
 
-export const AllElectionPublicView = () => {
+interface AllElectionPublicViewProps {
+  isResult: boolean
+}
+
+export const AllElectionPublicView = ({ isResult }: AllElectionPublicViewProps) => {
   return (
     <div className='px-5 md:px-10'>
-      <AllElectionPublicSection />
+      <AllElectionPublicSection isResult={isResult} />
     </div>
   )
 }
