@@ -6,8 +6,10 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import React, { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 
-import { Loader2, VoteIcon } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Loader2, VoteIcon } from 'lucide-react'
 import { ElectionGrid } from '../components/election-grid'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 
 export const AllElectionSection = () => {
   return (
@@ -33,10 +35,19 @@ const AllElectionSuspense = () => {
   const { data: elections } = useSuspenseQuery(
     trpc.election.getAllElection.queryOptions()
   )
+  const router = useRouter()
 
   return (
     <div className="space-y-6 pt-10">
       {/* En-tête avec compteur */}
+      <div className='flex items-center gap-x-2'>
+        <Button onClick={() => router.back()}>
+          <ArrowLeft /> Retour
+        </Button>
+        <Button onClick={() => router.forward()}>
+          Suvant <ArrowRight />
+        </Button>
+      </div>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Toutes les élections</h2>

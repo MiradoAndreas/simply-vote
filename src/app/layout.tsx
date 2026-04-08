@@ -44,10 +44,12 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+
         >
           <ClerkProvider>
             <TRPCReactProvider>
               <TooltipProvider>
+
                 <Toaster />
                 {children}
               </TooltipProvider>

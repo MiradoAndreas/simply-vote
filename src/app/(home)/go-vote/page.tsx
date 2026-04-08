@@ -1,13 +1,15 @@
 import { AllElectionPublicView } from "@/modules/election/ui/views/all-election-public-view"
 import { HydrateClient, prefetch, trpc } from "@/trpc/server"
 
-const Page = () => {
+export const dynamic = "force-dynamic"
+
+const Page = async () => {
   prefetch(
-    trpc.election.getPublicAllElection.queryOptions()
+    trpc.election.getAllElectionPublic.queryOptions()
   )
   return (
     <HydrateClient>
-      <AllElectionPublicView />
+      <AllElectionPublicView isResult={false} />
     </HydrateClient>
   )
 }

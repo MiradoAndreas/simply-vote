@@ -53,6 +53,14 @@ export const electionRouter = createTRPCRouter({
 
     return allElections;
   }),
+  getAllElectionPublic: protectedProcedure.query(async ({ ctx }) => {
+    const allElections = await db
+      .select()
+      .from(elections)
+      .orderBy(desc(elections.createdAt));
+
+    return allElections;
+  }),
   createCandidate: adminProcedure
     .input(
       z.object({
@@ -140,7 +148,7 @@ export const electionRouter = createTRPCRouter({
   getAllCandidatesPublic: protectedProcedure
     .input(
       z.object({
-        electionId: z.string().uuid("ID d'élection invalide"),
+        electionId: z.uuid("ID d'élection invalide"),
       }),
     )
     .query(async ({ input }) => {
@@ -282,6 +290,142 @@ export const electionRouter = createTRPCRouter({
         success: true,
         message: "Votre vote a été enregistré avec succès",
         vote,
+      };
+    }),
+  getElectionResults: protectedProcedure
+    .input(
+      z.object({
+        electionId: z.string().uuid("ID d'élection invalide"),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      // 1. Vérifier que l'élection existe
+      const [election] = await db
+        .select()
+        .from(elections)
+        .where(eq(elections.id, input.electionId));
+
+      if (!election) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Élection non trouvée",
+        });
+      }
+
+      // 2. Vérifier les permissions (admin ou élection terminée)
+      const now = new Date();
+      const isElectionEnded = now > election.endDate;
+      const isAdmin = ctx.user.role === "admin";
+
+      // Si l'utilisateur n'est pas admin et l'élection n'est pas terminée
+      if (!isAdmin && !isElectionEnded) {
+        // Retourner les infos de l'élection avec le temps restant au lieu d'une erreur
+        const timeRemaining = election.endDate.getTime() - now.getTime();
+        const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const hoursRemaining = Math.floor(
+          (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const minutesRemaining = Math.floor(
+          (timeRemaining % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const secondsRemaining = Math.floor(
+          (timeRemaining % (1000 * 60)) / 1000,
+        );
+
+        return {
+          election: {
+            id: election.id,
+            title: election.title,
+            description: election.description,
+            startDate: election.startDate,
+            endDate: election.endDate,
+            isActive: election.isActive,
+          },
+          results: [], // Pas de résultats disponibles
+          statistics: {
+            totalVotes: 0,
+            totalCandidates: 0,
+            participationRate: 0,
+            isElectionEnded: false,
+            isAvailable: false,
+            timeRemaining: {
+              days: daysRemaining,
+              hours: hoursRemaining,
+              minutes: minutesRemaining,
+              seconds: secondsRemaining,
+              total: timeRemaining,
+            },
+          },
+        };
+      }
+
+      // 3. Récupérer tous les candidats de l'élection
+      const candidates = await db
+        .select()
+        .from(options)
+        .where(eq(options.electionId, input.electionId))
+        .orderBy(options.order);
+
+      // 4. Récupérer tous les votes pour cette élection
+      const allVotes = await db
+        .select()
+        .from(votes)
+        .where(eq(votes.electionId, input.electionId));
+
+      // 5. Compter les votes par candidat
+      const voteCounts = new Map<string, number>();
+
+      // Initialiser les compteurs à 0 pour tous les candidats
+      candidates.forEach((candidate) => {
+        voteCounts.set(candidate.id, 0);
+      });
+
+      // Compter les votes
+      allVotes.forEach((vote) => {
+        vote.optionIds.forEach((candidateId) => {
+          const currentCount = voteCounts.get(candidateId) || 0;
+          voteCounts.set(candidateId, currentCount + 1);
+        });
+      });
+
+      // 6. Calculer les statistiques
+      const totalVotes = allVotes.length;
+      const participationRate =
+        totalVotes > 0 ? (totalVotes / allVotes.length) * 100 : 0;
+
+      // 7. Formater les résultats
+      const results = candidates.map((candidate) => ({
+        id: candidate.id,
+        name: candidate.name,
+        description: candidate.description,
+        imageUrl: candidate.imageUrl,
+        voteCount: voteCounts.get(candidate.id) || 0,
+        percentage:
+          totalVotes > 0
+            ? ((voteCounts.get(candidate.id) || 0) / totalVotes) * 100
+            : 0,
+      }));
+
+      // Trier par nombre de votes (décroissant)
+      results.sort((a, b) => b.voteCount - a.voteCount);
+
+      return {
+        election: {
+          id: election.id,
+          title: election.title,
+          description: election.description,
+          startDate: election.startDate,
+          endDate: election.endDate,
+          isActive: election.isActive,
+        },
+        results,
+        statistics: {
+          totalVotes,
+          totalCandidates: candidates.length,
+          participationRate: parseFloat(participationRate.toFixed(2)),
+          isElectionEnded: true,
+          isAvailable: true,
+        },
       };
     }),
 });

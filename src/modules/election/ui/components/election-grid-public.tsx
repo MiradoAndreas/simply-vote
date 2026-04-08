@@ -17,9 +17,10 @@ interface ElectionGridProps {
     maxChoices: number
     createdAt: Date
   }>
+  isResult: boolean
 }
 
-export const ElectionGridPublic = ({ elections }: ElectionGridProps) => {
+export const ElectionGridPublic = ({ elections, isResult }: ElectionGridProps) => {
   if (elections.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -37,7 +38,7 @@ export const ElectionGridPublic = ({ elections }: ElectionGridProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
       {elections.map((election) => (
-        <ElectionCardPublic key={election.id} election={election} />
+        <ElectionCardPublic key={election.id} election={election} isResult={isResult} />
       ))}
     </div>
   )
