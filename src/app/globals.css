@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --font-manrope: "Manrope", sans-serif;
   --background: oklch(0.9871 0.0056 157.1495);
   --foreground: oklch(0.1127 0.0574 263.1122);
   --card: oklch(1 0 0);
@@ -225,4 +226,10 @@ button,
 
 * {
   /* border: 1px solid red; */
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }

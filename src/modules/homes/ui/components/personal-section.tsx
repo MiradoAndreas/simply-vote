@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth, useClerk } from "@clerk/nextjs";
-import { CalendarPlus, EarthIcon, Goal, HistoryIcon, ListVideoIcon, NewspaperIcon, ThumbsUpIcon } from "lucide-react";
+import { CalendarPlus, EarthIcon, Goal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -30,7 +30,7 @@ const items = [
     title: "Results",
     url: "/results",
     icon: EarthIcon,
-    auth: true,
+
   },
 ];
 

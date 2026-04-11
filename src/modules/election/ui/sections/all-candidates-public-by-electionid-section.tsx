@@ -12,14 +12,75 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { VoteModal } from "../components/vote-modal"
 import { useRouter } from "next/navigation"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface Props {
   electionId: string
 }
 
+export const CandidatesLoadingSkeleton = () => {
+  return (
+    <div className="space-y-8">
+      {/* Header skeleton */}
+      <div className="text-center space-y-4">
+        <div className="flex justify-center">
+          <Skeleton className="h-12 w-32 rounded-full" />
+        </div>
+        <div className="space-y-2">
+          <Skeleton className="h-6 w-32 mx-auto" />
+          <Skeleton className="h-10 w-64 mx-auto" />
+          <Skeleton className="h-5 w-96 mx-auto" />
+        </div>
+      </div>
+
+      {/* Grille des candidats skeleton */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {[1, 2, 3].map((index) => (
+          <Card
+            key={index}
+            className="overflow-hidden border-0 bg-linear-to-b from-background to-muted/20"
+          >
+            {/* Section image skeleton */}
+            <div className="relative aspect-4/3 overflow-hidden bg-linear-to-br from-primary/5 to-primary/10">
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="text-center animate-pulse">
+                  <Users className="h-20 w-20 text-muted-foreground/30 mx-auto mb-2" />
+                  <Skeleton className="h-4 w-32 mx-auto" />
+                </div>
+              </div>
+
+              {/* Badge numéro skeleton */}
+              <div className="absolute top-4 left-4">
+                <div className="bg-background/90 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Section informations skeleton */}
+            <div className="p-6 space-y-4">
+              <div>
+                <Skeleton className="h-7 w-3/4 mb-2" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                  <Skeleton className="h-4 w-4/6" />
+                </div>
+              </div>
+
+              {/* Bouton voter skeleton */}
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export const AllCandidatesPublicByElectionIdSection = ({ electionId }: Props) => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<CandidatesLoadingSkeleton />}>
       <ErrorBoundary fallback={<div>Error!</div>}>
         <AllCandidatesPublicByElectionIdSectionSuspense electionId={electionId} />
       </ErrorBoundary>
@@ -224,65 +285,4 @@ interface Candidate {
   description: string | null
   imageUrl: string | null
   order: number | null
-}
-
-const CandidateCard = ({ candidate, index }: { candidate: Candidate; index: number }) => {
-  return (
-    <Card className="group pt-0  rounded-none overflow-hidden hover:shadow-xl transition-all duration-300 border-0 bg-linear-to-b from-background to-muted/20">
-      {/* Section image */}
-      <div className="relative aspect-4/3 overflow-hidden bg-linear-to-br from-primary/5 to-primary/10">
-        {candidate.imageUrl ? (
-          <img
-            src={`/candidates/${candidate.imageUrl}.png`}
-            alt={candidate.name}
-
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="text-center">
-              <Users className="h-20 w-20 text-muted-foreground/50 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">Photo non disponible</p>
-            </div>
-          </div>
-        )}
-
-        {/* Badge numéro */}
-        <div className="absolute top-4 left-4">
-          <div className="bg-background/90 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
-            <span className="font-bold text-lg">#{index + 1}</span>
-          </div>
-        </div>
-
-        {/* Badge vote */}
-        <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Badge className="bg-primary text-primary-foreground gap-1">
-            <Star className="h-3 w-3" />
-            Voter
-          </Badge>
-        </div>
-      </div>
-
-      {/* Section informations */}
-      <div className="p-6 space-y-4">
-        <div>
-          <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-            {candidate.name}
-          </h3>
-          {candidate.description && (
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {candidate.description}
-            </p>
-          )}
-        </div>
-
-        {/* Bouton voter */}
-        <button className="w-full bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 group/btn">
-          <CheckCircle className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
-          Choisir ce candidat
-        </button>
-      </div>
-    </Card>
-  )
 }
