@@ -4,6 +4,11 @@ import { HydrateClient, prefetch, trpc } from "@/trpc/server"
 
 export const dynamic = "force-dynamic"
 
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Tous les élections"
+}
 
 const Page = async () => {
   await requireAdmin()

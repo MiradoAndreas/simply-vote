@@ -2,6 +2,7 @@ import { elections, options, votes } from "@/db/schema";
 import { db } from "@/index";
 import {
   adminProcedure,
+  baseProcedure,
   createTRPCRouter,
   protectedProcedure,
 } from "@/trpc/init";
@@ -53,7 +54,7 @@ export const electionRouter = createTRPCRouter({
 
     return allElections;
   }),
-  getAllElectionPublic: protectedProcedure.query(async ({ ctx }) => {
+  getAllElectionPublic: baseProcedure.query(async ({ ctx }) => {
     const allElections = await db
       .select()
       .from(elections)

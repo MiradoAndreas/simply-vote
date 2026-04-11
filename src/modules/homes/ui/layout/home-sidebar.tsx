@@ -8,6 +8,7 @@ import { MainSection } from '../components/main-section'
 import { PersonalSection } from '../components/personal-section'
 import { AuthButton } from '@/components/auth-button'
 import { ModeToggle } from '@/components/ui/toogle-mode'
+import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler'
 
 
 
@@ -29,8 +30,8 @@ export const HomeSidebar = () => {
         <SidebarMenu >
           <SidebarGroupLabel className='uppercase'>Settings</SidebarGroupLabel>
           <SidebarMenuItem>
-            <div>
-              <ModeToggle />
+            <div className='pl-3'>
+              <AnimatedThemeToggler />
             </div>
             <div className='py-3 w-full  bg-background rounded flex items-center justify-between pl-2.5'>
               <AuthButton collapsed={collapsed} />

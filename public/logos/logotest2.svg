@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 5553 2049" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-12365.837548,-21285.148584)">
+        <g transform="matrix(1,0,0,1,10142,7548)">
+            <g>
+                <g transform="matrix(1,0,0,1,-566.394748,11883.1836)">
+                    <path d="M3757.02,1853.965L4341.671,2438.616L4215.648,2564.639L3757.055,2106.046L3482.693,2380.408L3941.286,2839.001L3415.509,3364.778L2903.893,2853.162L2957.171,2654.324L3415.509,3112.662L3689.169,2839.001L3230.577,2380.408L3757.02,1853.965Z" style="fill:rgb(89,252,123);"/>
+                </g>
+                <g transform="matrix(1,0,0,1,-566.394748,11883.1836)">
+                    <path d="M2790.232,3277.348L2843.511,3078.511L3415.509,3650.509L4158.151,2907.867L4284.209,3033.925L3415.509,3902.625L2790.232,3277.348Z" style="fill:rgb(89,252,123);"/>
+                </g>
+            </g>
+            <g transform="matrix(1.038153,0,0,1.235019,-1520.147084,11585.244794)">
+                <g transform="matrix(769.221541,0,0,769.221541,8962.170416,2766)">
+                </g>
+                <text x="5234px" y="2766px" style="font-family:'Mainard-Regular', 'Mainard';font-size:769.222px;fill:rgb(246,233,233);">SIMPL<tspan x="8264.688px " y="2766px ">Y</tspan></text>
+            </g>
+            <g transform="matrix(1.097099,0,0,1.097099,-1808.593014,12738.574183)">
+                <g transform="matrix(769.221541,0,0,769.221541,7188.976545,2766)">
+                </g>
+                <text x="5234px" y="2766px" style="font-family:'Manrope-Bold', 'Manrope';font-weight:700;font-size:769.222px;fill:rgb(246,233,233);">V<tspan x="5711.302px 6272.449px " y="2766px 2766px ">OT</tspan>E</text>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,7 +1,7 @@
 // components/election/election-grid.tsx
 "use client"
 
-import { ElectionCard } from "./election-card"
+
 import { VoteIcon } from "lucide-react"
 import { ElectionCardPublic } from "./election-card-public"
 

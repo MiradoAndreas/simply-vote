@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react"
@@ -11,9 +12,47 @@ interface AllCandidatesSuspenseProps {
   electionId: string;
 }
 
+const CandidateCardSkeleton = () => {
+  return (
+    <Card className="hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-start gap-4">
+          {/* Avatar Skeleton */}
+          <Skeleton className="h-16 w-16 rounded-full" />
+
+          {/* Infos Skeleton */}
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-5 w-12 rounded-full" />
+            </div>
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+const CandidatesGridSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-5 w-32" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[...Array(6)].map((_, i) => (
+          <CandidateCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export const AllCandidates = ({ electionId }: AllCandidatesSuspenseProps) => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<CandidatesGridSkeleton />}>
       <ErrorBoundary fallback={<div>Error!</div>}>
         <AllCandidatesSuspense electionId={electionId} />
       </ErrorBoundary>

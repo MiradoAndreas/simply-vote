@@ -26,16 +26,11 @@ const items = [
     auth: true
   },
   {
-    title: "AEPC",
-    url: "/aepc",
+    title: "Auteur",
+    url: "/kintana",
     icon: GroupIcon,
   },
-  {
-    title: "Blog",
-    url: "/blog",
-    icon: BookCopyIcon,
-    auth: true
-  },
+
 ];
 
 export const MainSection = () => {

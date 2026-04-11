@@ -20,7 +20,7 @@ export const Unauthorized = ({
   description = "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
   showBackButton = true,
   showHomeButton = true,
-  contactEmail = "support@simplyvote.com",
+  contactEmail = "",
 }: UnauthorizedProps) => {
   const router = useRouter()
 

@@ -63,6 +63,5 @@ export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
       message: "Vous n'êtes pas admin",
     });
   }
-
   return next();
 });
