@@ -11,7 +11,12 @@ export const createTRPCContext = cache(async () => {
    */
   const { userId } = await auth();
 
-  return { clerkUserId: userId };
+  return {
+    clerkUserId: userId,
+    user: {
+      role: null,
+    },
+  };
 });
 // Avoid exporting the entire t-object
 // since it's not very descriptive.

@@ -6,14 +6,12 @@ import { Badge } from "@/components/ui/badge"
 import {
   ArrowRight,
   Shield,
-  Sparkles,
   Play,
   ChevronRight,
   GraduationCap,
   Users,
   Calendar,
   Trophy,
-  CheckCircle2
 } from "lucide-react"
 import Link from "next/link"
 
@@ -22,7 +20,7 @@ export const HeroSection = () => {
     <section className="relative overflow-hidden">
       {/* Fond animé */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-background/80" />
+        <div className="absolute inset-0 bg-linear-to-b from-background via-background to-background/80" />
         <div className="absolute top-0 -left-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute top-40 -right-40 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse delay-1000" />
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse delay-2000" />
@@ -49,10 +47,10 @@ export const HeroSection = () => {
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
               Élection AEPC - VOTE {" "}
               <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-primary via-primary to-secondary bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-primary via-primary to-secondary bg-clip-text text-transparent">
                   EN LIGNE
                 </span>
-                <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary/50 to-secondary/50 rounded-full" />
+                <div className="absolute -bottom-2 left-0 right-0 h-1 bg-linear-to-r from-primary/50 to-secondary/50 rounded-full" />
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

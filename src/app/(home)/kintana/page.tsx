@@ -6,11 +6,10 @@ export const metadata: Metadata = {
   title: "Kintana"
 }
 
-
 const Page = () => {
-  return (
-    <div className="">
 
+  return (
+    <div>
       <KintanaHeroCarousel />
       <CEOSectionCircle
         name="Geneto Robson"
