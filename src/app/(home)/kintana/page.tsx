@@ -7,10 +7,12 @@ export const metadata: Metadata = {
 }
 
 
-const Page = () => {
-  return (
-    <div className="">
 
+
+const Page = () => {
+
+  return (
+    <div>
       <KintanaHeroCarousel />
       <CEOSectionCircle
         name="Geneto Robson"

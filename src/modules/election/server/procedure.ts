@@ -7,7 +7,8 @@ import {
   protectedProcedure,
 } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, or } from "drizzle-orm";
+import { Fleur_De_Leah } from "next/font/google";
 import z from "zod";
 
 export const electionRouter = createTRPCRouter({
@@ -293,7 +294,7 @@ export const electionRouter = createTRPCRouter({
         vote,
       };
     }),
-  getElectionResults: protectedProcedure
+  getElectionResults: baseProcedure
     .input(
       z.object({
         electionId: z.string().uuid("ID d'élection invalide"),
@@ -320,7 +321,6 @@ export const electionRouter = createTRPCRouter({
 
       // Si l'utilisateur n'est pas admin et l'élection n'est pas terminée
       if (!isAdmin && !isElectionEnded) {
-        // Retourner les infos de l'élection avec le temps restant au lieu d'une erreur
         const timeRemaining = election.endDate.getTime() - now.getTime();
         const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
         const hoursRemaining = Math.floor(
@@ -342,7 +342,7 @@ export const electionRouter = createTRPCRouter({
             endDate: election.endDate,
             isActive: election.isActive,
           },
-          results: [], // Pas de résultats disponibles
+          results: [],
           statistics: {
             totalVotes: 0,
             totalCandidates: 0,
@@ -376,12 +376,10 @@ export const electionRouter = createTRPCRouter({
       // 5. Compter les votes par candidat
       const voteCounts = new Map<string, number>();
 
-      // Initialiser les compteurs à 0 pour tous les candidats
       candidates.forEach((candidate) => {
         voteCounts.set(candidate.id, 0);
       });
 
-      // Compter les votes
       allVotes.forEach((vote) => {
         vote.optionIds.forEach((candidateId) => {
           const currentCount = voteCounts.get(candidateId) || 0;
@@ -410,6 +408,18 @@ export const electionRouter = createTRPCRouter({
       // Trier par nombre de votes (décroissant)
       results.sort((a, b) => b.voteCount - a.voteCount);
 
+      // 8. Vérifier si un second tour est nécessaire
+      const winner = results[0];
+      const needsSecondRound =
+        winner && winner.percentage <= 50 && results.length > 2;
+
+      let secondRoundCandidates: typeof results | null = null;
+
+      if (needsSecondRound) {
+        // Prendre les 2 premiers candidats pour le second tour
+        secondRoundCandidates = results.slice(0, 2);
+      }
+
       return {
         election: {
           id: election.id,
@@ -426,7 +436,112 @@ export const electionRouter = createTRPCRouter({
           participationRate: parseFloat(participationRate.toFixed(2)),
           isElectionEnded: true,
           isAvailable: true,
+          needsSecondRound,
+          secondRoundCandidates: secondRoundCandidates
+            ? {
+                candidate1: secondRoundCandidates[0],
+                candidate2: secondRoundCandidates[1],
+              }
+            : null,
         },
+      };
+    }),
+  createSecondRound: adminProcedure
+    .input(
+      z.object({
+        originalElectionId: z.string().uuid("ID d'élection invalide"),
+        candidate1Id: z.string().uuid("ID de candidat invalide"),
+        candidate2Id: z.string().uuid("ID de candidat invalide"),
+        startDate: z.date(),
+        endDate: z.date(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      // 1. Vérifier que l'élection originale existe
+      const [originalElection] = await db
+        .select()
+        .from(elections)
+        .where(eq(elections.id, input.originalElectionId));
+
+      if (!originalElection) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Élection originale non trouvée",
+        });
+      }
+
+      // 2. Vérifier les permissions
+      if (
+        originalElection.createdBy !== ctx.user.id &&
+        ctx.user.role !== "admin"
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Vous n'êtes pas autorisé à créer un second tour",
+        });
+      }
+
+      // 3. Créer la nouvelle élection pour le second tour
+      const [secondRoundElection] = await db
+        .insert(elections)
+        .values({
+          title: `${originalElection.title} - Second Tour`,
+          description: `Second tour de l'élection "${originalElection.title}"`,
+          createdBy: ctx.user.id,
+          startDate: input.startDate,
+          endDate: input.endDate,
+          isActive: true,
+          isPublic: originalElection.isPublic,
+          maxChoices: 1, // Second tour = choix unique
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      // 4. Récupérer les 2 candidats originaux
+      const [candidate1, candidate2] = await db
+        .select()
+        .from(options)
+        .where(
+          and(
+            eq(options.electionId, input.originalElectionId),
+            or(
+              eq(options.id, input.candidate1Id),
+              eq(options.id, input.candidate2Id),
+            ),
+          ),
+        );
+
+      if (!candidate1 || !candidate2) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Candidats non trouvés",
+        });
+      }
+
+      // 5. Ajouter les 2 candidats à la nouvelle élection
+      const newCandidates = await db
+        .insert(options)
+        .values([
+          {
+            electionId: secondRoundElection.id,
+            name: candidate1.name,
+            description: candidate1.description,
+            imageUrl: candidate1.imageUrl,
+            order: 0,
+          },
+          {
+            electionId: secondRoundElection.id,
+            name: candidate2.name,
+            description: candidate2.description,
+            imageUrl: candidate2.imageUrl,
+            order: 1,
+          },
+        ])
+        .returning();
+
+      return {
+        election: secondRoundElection,
+        candidates: newCandidates,
       };
     }),
 });
