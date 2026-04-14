@@ -1,4 +1,4 @@
-import { elections, options, votes } from "@/db/schema";
+import { elections, options, users, votes } from "@/db/schema";
 import { db } from "@/index";
 import {
   adminProcedure,
@@ -373,50 +373,86 @@ export const electionRouter = createTRPCRouter({
         .from(votes)
         .where(eq(votes.electionId, input.electionId));
 
-      // 5. Compter les votes par candidat
+      // 5. Récupérer tous les utilisateurs (pour les emails) - UNE SEULE REQUÊTE
+      const allUsers = await db
+        .select({
+          id: users.id,
+          email: users.email,
+          imageUrl: users.imageUrl,
+        })
+        .from(users);
+
+      // Créer un Map pour accéder rapidement aux infos utilisateur
+      const userMap = new Map(allUsers.map((u) => [u.id, u]));
+
+      // 6. Compter les votes par candidat et collecter les votants
       const voteCounts = new Map<string, number>();
+      const candidateVoters = new Map<
+        string,
+        Array<{ id: string; email: string; imageUrl: string | null }>
+      >();
 
       candidates.forEach((candidate) => {
         voteCounts.set(candidate.id, 0);
+        candidateVoters.set(candidate.id, []);
       });
 
       allVotes.forEach((vote) => {
+        const user = userMap.get(vote.userId);
+        if (!user) return;
+
         vote.optionIds.forEach((candidateId) => {
+          // Incrémenter le compteur
           const currentCount = voteCounts.get(candidateId) || 0;
           voteCounts.set(candidateId, currentCount + 1);
+
+          // Ajouter le votant à la liste du candidat (sans doublon)
+          const voters = candidateVoters.get(candidateId) || [];
+          if (!voters.some((v) => v.id === vote.userId)) {
+            voters.push({
+              id: user.id,
+              email: user.email,
+              imageUrl: user.imageUrl,
+            });
+          }
+          candidateVoters.set(candidateId, voters);
         });
       });
 
-      // 6. Calculer les statistiques
+      // 7. Calculer les statistiques
       const totalVotes = allVotes.length;
       const participationRate =
         totalVotes > 0 ? (totalVotes / allVotes.length) * 100 : 0;
 
-      // 7. Formater les résultats
-      const results = candidates.map((candidate) => ({
-        id: candidate.id,
-        name: candidate.name,
-        description: candidate.description,
-        imageUrl: candidate.imageUrl,
-        voteCount: voteCounts.get(candidate.id) || 0,
-        percentage:
-          totalVotes > 0
-            ? ((voteCounts.get(candidate.id) || 0) / totalVotes) * 100
-            : 0,
-      }));
+      // 8. Formater les résultats avec les emails des votants
+      const results = candidates.map((candidate) => {
+        const voters = candidateVoters.get(candidate.id) || [];
+        return {
+          id: candidate.id,
+          name: candidate.name,
+          description: candidate.description,
+          imageUrl: candidate.imageUrl,
+          voteCount: voteCounts.get(candidate.id) || 0,
+          percentage:
+            totalVotes > 0
+              ? ((voteCounts.get(candidate.id) || 0) / totalVotes) * 100
+              : 0,
+          voters: voters.map((v) => v.email), // Liste des emails pour l'affichage rapide
+          votersDetails: voters, // Détails complets pour le dialog
+        };
+      });
 
       // Trier par nombre de votes (décroissant)
       results.sort((a, b) => b.voteCount - a.voteCount);
 
-      // 8. Vérifier si un second tour est nécessaire
+      // 9. Vérifier si un second tour est nécessaire
       const winner = results[0];
       const needsSecondRound =
-        winner && winner.percentage <= 50 && results.length > 2;
+        winner && winner.percentage < 50 && results.length > 2;
 
       let secondRoundCandidates: typeof results | null = null;
 
       if (needsSecondRound) {
-        // Prendre les 2 premiers candidats pour le second tour
         secondRoundCandidates = results.slice(0, 2);
       }
 
