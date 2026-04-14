@@ -3,14 +3,13 @@
 import { AllResultsPublicByElectionIdView } from "@/modules/election/ui/views/all-results-public-by-election-id-view"
 import { HydrateClient, prefetch, trpc } from "@/trpc/server"
 
+export const dynamic = "force-dynamic"
 
 interface PageProps {
   params: Promise<{
     electionId: string
   }>
 }
-
-
 
 const Page = async ({ params }: PageProps) => {
   const { electionId } = await params
