@@ -1,6 +1,8 @@
 import { DetailsElectionView } from "@/modules/election/ui/views/details-election-view"
 import { HydrateClient, prefetch, trpc } from "@/trpc/server"
 
+export const dynamic = "force-dynamic"
+
 interface PageProps {
   params: Promise<{
     electionId: string
