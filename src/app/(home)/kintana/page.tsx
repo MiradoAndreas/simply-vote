@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: "Kintana"
 }
 
+export const dynamic = "force-dynamic"
+
 const Page = () => {
 
   return (

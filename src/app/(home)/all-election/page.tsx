@@ -5,6 +5,8 @@ import { HydrateClient, prefetch, trpc } from "@/trpc/server"
 
 import { Metadata } from "next"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Tous les élections"
 }

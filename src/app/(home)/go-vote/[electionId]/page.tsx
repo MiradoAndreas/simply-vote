@@ -1,6 +1,7 @@
 import { AllCandidatesPublicByElectionIdView } from "@/modules/election/ui/views/all-candidates-public-by-electionid-view"
 import { HydrateClient, prefetch, trpc } from "@/trpc/server"
 
+export const dynamic = "force-dynamic"
 
 
 interface PageProps {
