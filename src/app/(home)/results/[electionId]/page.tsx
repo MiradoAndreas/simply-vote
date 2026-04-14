@@ -1,5 +1,4 @@
 
-export const dynamic = "force-dynamic"
 
 import { AllResultsPublicByElectionIdView } from "@/modules/election/ui/views/all-results-public-by-election-id-view"
 import { HydrateClient, prefetch, trpc } from "@/trpc/server"

@@ -6,9 +6,6 @@ export const metadata: Metadata = {
   title: "Kintana"
 }
 
-
-
-
 const Page = () => {
 
   return (
