@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
-import { Trophy, Users, Calendar, Clock, Loader2, ArrowLeft, ArrowRight, AlertCircle, Vote } from "lucide-react"
+import { Trophy, Users, Calendar, Clock, Loader2, ArrowLeft, ArrowRight, AlertCircle, Vote, MailCheckIcon } from "lucide-react"
 import { format } from "date-fns"
 import { fr } from "date-fns/locale"
 import { Suspense, useEffect, useState } from "react"
@@ -29,6 +29,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { Spinner } from "@/components/ui/spinner"
+import { VotersDialog } from "../components/voters-dialog"
 
 interface ElectionResultsProps {
   electionId: string
@@ -366,13 +367,13 @@ const AllResultsPublicByElectionIdSectionSuspense = ({ electionId }: ElectionRes
                   <p className="font-medium">{statistics.totalVotes} votes</p>
                 </div>
               </div>
-              {/* <div className="flex items-center gap-2">
-                <Trophy className="h-4 w-4 text-muted-foreground" />
+              <div className="flex items-center gap-2">
+                <MailCheckIcon className="h-4 w-4 text-muted-foreground" />
                 <div className="text-sm">
-                  <p className="text-muted-foreground">Participation</p>
-                  <p className="font-medium">{statistics.participationRate}%</p>
+                  <p className="text-muted-foreground">Les emails enregistrés</p>
+                  <p className="font-medium">100</p>
                 </div>
-              </div> */}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -511,14 +512,16 @@ const AllResultsPublicByElectionIdSectionSuspense = ({ electionId }: ElectionRes
           </TabsContent>
         </Tabs>
 
-        {/* Tableau détaillé des résultats */}
+        {/* Tableau détaillé des résultats - Version Ultra Responsive */}
         <Card>
-          <CardHeader>
-            <CardTitle>Détail des résultats</CardTitle>
-            <CardDescription>Classement complet des candidats</CardDescription>
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="text-lg md:text-xl">Détail des résultats</CardTitle>
+            <CardDescription className="text-sm">
+              Classement complet des candidats
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+          <CardContent className="p-4 md:p-6 pt-0">
+            <div className="space-y-3 md:space-y-4">
               {results.map((candidate, index) => {
                 const isSecondRoundCandidate = secondRoundCandidates && (
                   candidate.id === secondRoundCandidates.candidate1.id ||
@@ -528,43 +531,95 @@ const AllResultsPublicByElectionIdSectionSuspense = ({ electionId }: ElectionRes
                 return (
                   <div
                     key={candidate.id}
-                    className={`flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors ${index === 0 ? "bg-primary/5 border border-primary/20" : ""
-                      } ${isSecondRoundCandidate && needsSecondRound ? "ring-1 ring-amber-500/50 bg-amber-500/5" : ""
-                      }`}
+                    className={`
+              relative overflow-hidden
+              flex flex-col sm:flex-row sm:items-center 
+              gap-3 sm:gap-4 
+              p-3 md:p-4 
+              rounded-lg 
+              transition-all duration-200
+              hover:shadow-md
+              ${index === 0 ? "bg-primary/5 border border-primary/20" : "bg-card hover:bg-muted/30"}
+              ${isSecondRoundCandidate && needsSecondRound ? "ring-1 ring-amber-500/50 bg-amber-500/5" : ""}
+            `}
                   >
-                    <div className={`w-8 text-center font-bold text-lg ${index === 0 ? "text-primary" : "text-muted-foreground"}`}>
-                      #{index + 1}
-                    </div>
-                    <div className="relative h-12 w-12 rounded-full overflow-hidden bg-muted shrink-0">
-                      {candidate.imageUrl ? (
-                        <img src={`/candidates/${candidate.imageUrl}.png`} alt={candidate.name} className="object-cover w-full h-full" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Users className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <p className={`font-medium ${index === 0 ? "text-primary" : ""}`}>
-                        {candidate.name}
-                        {isSecondRoundCandidate && needsSecondRound && (
-                          <Badge variant="outline" className="ml-2 text-xs bg-amber-500/10 border-amber-500/30 text-amber-600">
-                            Qualifié pour le second tour
-                          </Badge>
+                    {/* Rangée supérieure (mobile) / Ligne unique (desktop) */}
+                    <div className="flex items-center justify-between sm:justify-start gap-3 sm:gap-4 flex-1">
+                      {/* Position */}
+                      <div className={`
+                w-8 md:w-10 text-center font-bold 
+                text-base md:text-lg 
+                ${index === 0 ? "text-primary" : "text-muted-foreground"}
+                shrink-0
+              `}>
+                        #{index + 1}
+                      </div>
+
+                      {/* Avatar */}
+                      <div className="relative h-10 w-10 md:h-12 md:w-12 rounded-full overflow-hidden bg-muted shrink-0">
+                        {candidate.imageUrl ? (
+                          <img
+                            src={`/candidates/${candidate.imageUrl}.png`}
+                            alt={candidate.name}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Users className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground" />
+                          </div>
                         )}
-                      </p>
-                      <p className="text-sm text-muted-foreground line-clamp-1">
-                        {candidate.description || "Aucune description"}
-                      </p>
+                      </div>
+
+                      {/* Infos candidat */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
+                          <p className={`font-medium text-sm md:text-base truncate ${index === 0 ? "text-primary" : ""}`}>
+                            {candidate.name}
+                          </p>
+                          {isSecondRoundCandidate && needsSecondRound && (
+                            <Badge variant="outline" className="text-[10px] md:text-xs bg-amber-500/10 border-amber-500/30 text-amber-600 shrink-0">
+                              Qualifié
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs md:text-sm text-muted-foreground line-clamp-1 md:line-clamp-2">
+                          {candidate.description || "Aucune description"}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-lg">{candidate.voteCount}</p>
-                      <p className="text-sm text-muted-foreground">vote{candidate.voteCount > 1 ? "s" : ""}</p>
-                    </div>
-                    <div className="w-20 text-right">
-                      <p className={`font-semibold ${index === 0 ? "text-primary" : ""}`}>
-                        {candidate.percentage.toFixed(1)}%
-                      </p>
+
+                    {/* Rangée inférieure (mobile) / Suite ligne unique (desktop) */}
+                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 pl-0 sm:pl-4">
+                      {/* Statistiques votes */}
+                      <div className="flex items-center gap-4 md:gap-6">
+                        <div className="text-right">
+                          <p className="font-bold text-base md:text-lg">{candidate.voteCount}</p>
+                          <p className="text-[10px] md:text-xs text-muted-foreground whitespace-nowrap">
+                            vote{candidate.voteCount > 1 ? "s" : ""}
+                          </p>
+                        </div>
+                        <div className="w-12 md:w-20 text-right">
+                          <p className={`font-semibold text-sm md:text-base ${index === 0 ? "text-primary" : ""}`}>
+                            {candidate.percentage.toFixed(1)}%
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Bouton voir les votants */}
+                      <VotersDialog
+                        candidateName={candidate.name}
+                        voters={candidate.votersDetails || []}
+                        voteCount={candidate.voteCount}
+                      >
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1 text-xs md:text-sm h-8 md:h-9 px-2 md:px-3 shrink-0"
+                        >
+                          <Users className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                          <span className="hidden xs:inline">Voir</span>
+                        </Button>
+                      </VotersDialog>
                     </div>
                   </div>
                 )
