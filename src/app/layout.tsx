@@ -10,7 +10,8 @@ import { Toaster } from "sonner";
 import { TRPCReactProvider } from "@/trpc/client";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { FooterSection } from "@/modules/landing/ui/sections/footer-section";
-import { TawkScript } from "@/components/tawk";
+import Script from "next/script";
+
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -43,7 +44,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <TawkScript />
+
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -63,7 +64,10 @@ export default function RootLayout({
           </ClerkProvider>
         </ThemeProvider>
 
-
+        <Script
+          src="https://embed.tawk.to/69edecdc31efa51c38a25713/1jn4mag2o"
+          strategy="afterInteractive"
+        />
 
 
       </body>
