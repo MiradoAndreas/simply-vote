@@ -4,12 +4,13 @@ import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/them-provider";
-import { ModeToggle } from "@/components/ui/toogle-mode";
+
 
 import { Toaster } from "sonner";
 import { TRPCReactProvider } from "@/trpc/client";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { FooterSection } from "@/modules/landing/ui/sections/footer-section";
+import { TawkScript } from "@/components/tawk";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -33,6 +34,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html
       lang="en"
@@ -40,6 +43,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <TawkScript />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -58,6 +62,10 @@ export default function RootLayout({
             </TRPCReactProvider>
           </ClerkProvider>
         </ThemeProvider>
+
+
+
+
       </body>
     </html>
   );
