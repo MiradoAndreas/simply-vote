@@ -5,6 +5,13 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { db } from "@/index";
 
+export async function GET() {
+  return Response.json({
+    status: "ok",
+    endpoint: "clerk-webhook",
+  });
+}
+
 export async function POST(req: Request) {
   const SIGNIN_SECRET = process.env.CLERK_SIGNING_SECRET;
 
