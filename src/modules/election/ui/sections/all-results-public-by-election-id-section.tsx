@@ -1,21 +1,9 @@
 "use client"
 
-import { useTRPC } from "@/trpc/client"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
-import { Trophy, Users, Calendar, Clock, Loader2, ArrowLeft, ArrowRight, AlertCircle, Vote, MailCheckIcon } from "lucide-react"
-import { format } from "date-fns"
-import { fr } from "date-fns/locale"
-import { Suspense, useEffect, useState } from "react"
-import { ErrorBoundary } from "react-error-boundary"
-import { ElectionTimer } from "../components/election-timer"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -25,10 +13,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
+import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useTRPC } from "@/trpc/client"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { format } from "date-fns"
+import { fr } from "date-fns/locale"
+import { AlertCircle, ArrowLeft, ArrowRight, Calendar, Clock, Loader2, Trophy, Users, Vote } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
+import { ErrorBoundary } from "react-error-boundary"
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { toast } from "sonner"
+import { ElectionTimer } from "../components/election-timer"
 import { VotersDialog } from "../components/voters-dialog"
 
 interface ElectionResultsProps {
@@ -345,7 +344,7 @@ const AllResultsPublicByElectionIdSectionSuspense = ({ electionId }: ElectionRes
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div className="text-sm">
@@ -367,13 +366,7 @@ const AllResultsPublicByElectionIdSectionSuspense = ({ electionId }: ElectionRes
                   <p className="font-medium">{statistics.totalVotes} votes</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <MailCheckIcon className="h-4 w-4 text-muted-foreground" />
-                <div className="text-sm">
-                  <p className="text-muted-foreground">Les emails enregistrés</p>
-                  <p className="font-medium">100</p>
-                </div>
-              </div>
+
             </div>
           </CardContent>
         </Card>
@@ -533,10 +526,10 @@ const AllResultsPublicByElectionIdSectionSuspense = ({ electionId }: ElectionRes
                     key={candidate.id}
                     className={`
               relative overflow-hidden
-              flex flex-col sm:flex-row sm:items-center 
-              gap-3 sm:gap-4 
-              p-3 md:p-4 
-              rounded-lg 
+              flex flex-col sm:flex-row sm:items-center
+              gap-3 sm:gap-4
+              p-3 md:p-4
+              rounded-lg
               transition-all duration-200
               hover:shadow-md
               ${index === 0 ? "bg-primary/5 border border-primary/20" : "bg-card hover:bg-muted/30"}
@@ -547,8 +540,8 @@ const AllResultsPublicByElectionIdSectionSuspense = ({ electionId }: ElectionRes
                     <div className="flex items-center justify-between sm:justify-start gap-3 sm:gap-4 flex-1">
                       {/* Position */}
                       <div className={`
-                w-8 md:w-10 text-center font-bold 
-                text-base md:text-lg 
+                w-8 md:w-10 text-center font-bold
+                text-base md:text-lg
                 ${index === 0 ? "text-primary" : "text-muted-foreground"}
                 shrink-0
               `}>
