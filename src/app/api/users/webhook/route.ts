@@ -32,24 +32,20 @@ export async function POST(req: Request) {
   }
 
   // Get body
-  const payload = await req.json();
-  const body = JSON.stringify(payload);
+  const body = await req.text();
 
-  let evt: WebhookEvent;
+let evt: WebhookEvent;
 
-  // Verify payload with headers
-  try {
-    evt = wh.verify(body, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    }) as WebhookEvent;
-  } catch (error) {
-    console.error("Error: Could not verify webhook: ", error);
-    return new Response("Error: Verification error : ", {
-      status: 400,
-    });
-  }
+try {
+  evt = wh.verify(body, {
+    "svix-id": svix_id,
+    "svix-timestamp": svix_timestamp,
+    "svix-signature": svix_signature,
+  }) as WebhookEvent;
+} catch (error) {
+  console.error("Webhook verification failed:", error);
+  return new Response("Invalid signature", { status: 400 });
+}
 
   // Do something with payload
   // For this guid,
