@@ -1,8 +1,8 @@
 // components/hero-section.tsx
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   ArrowRight,
   Shield,
@@ -12,8 +12,8 @@ import {
   Users,
   Calendar,
   Trophy,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
 export const HeroSection = () => {
   return (
@@ -45,7 +45,7 @@ export const HeroSection = () => {
           {/* Titre principal */}
           <div className="space-y-4 max-w-4xl animate-fade-in-up animation-delay-200">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-              Élection AEPC - VOTE {" "}
+              Élection - VOTE{" "}
               <span className="relative inline-block">
                 <span className="bg-linear-to-r from-primary via-primary to-secondary bg-clip-text text-transparent">
                   EN LIGNE
@@ -54,15 +54,18 @@ export const HeroSection = () => {
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Votez toute en simplicité sur la plateforme <span className="text-primary">
-                SIMPLY VOTE
-              </span>
+              Votez toute en simplicité sur la plateforme{" "}
+              <span className="text-primary">SIMPLY VOTE</span>
             </p>
           </div>
 
           {/* Boutons CTA */}
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-400">
-            <Button size="lg" className="gap-2 group relative overflow-hidden" asChild>
+            <Button
+              size="lg"
+              className="gap-2 group relative overflow-hidden"
+              asChild
+            >
               <Link href="/go-vote">
                 <span className="relative z-10 flex items-center gap-2">
                   Voter des élections étudiantes
@@ -101,8 +104,6 @@ export const HeroSection = () => {
           </div>
         </div>
       </div>
-
-
     </section>
-  )
-}
+  );
+};
