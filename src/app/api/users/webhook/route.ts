@@ -5,8 +5,6 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 
-
-
 export async function POST(req: Request) {
   const SIGNIN_SECRET = process.env.CLERK_SIGNING_SECRET;
 
